@@ -1,5 +1,133 @@
 body {
-   font-family: Verdana;
-   font-size: 90%;
+  font-family: Verdana;
+  font-size: 90%;
+  margin: 0;
+  display: grid;
+  grid-template-rows:  18rem auto 6rem;
+  grid-template-columns: 3fr 3fr 1fr;
+  grid-column-gap: 5rem;
+}
 
+/* header */
+.header {
+  grid-column: 1 / span 3;
+  grid-row: 1;
+  background-image: url('../images/hacker_background.png');
+  background-repeat:  no-repeat;
+  background-size:  800px auto;
+  background-color: black;
+  font-family: monospace;
+  color: #808080;
+}
+
+.header > .title {
+  margin-top: 2.5rem;
+  margin-left: 1rem;
+  font-size: 300%;
+}
+
+.menu {
+  position: absolute;
+  right: 0;
+  margin-right: 2rem;
+}
+
+.menu li {
+  display: inline-block;
+  margin-right: 3rem;
+}
+
+.menu li > a {
+  font-family: monospace;
+  color: #808080;
+  text-decoration: none;
+  font-size: 150%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.menu li > a:hover {
+  background-color: #202020;
+}
+
+#subscribe {
+  margin-top: 7rem;
+}
+
+.button {
+  font-size: 180%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.button > a {
+  color: #808080;
+  text-decoration: none;
+  padding: 1rem;
+  border: 1px solid #808080;
+  border-radius: 0.5rem;
+}
+
+.button > a:hover {
+  background-color: #202020;
+}
+
+/* main */
+.article {
+  padding: 2rem;
+}
+
+.article > .title {
+  font-size: 200%;
+  font-family: monospace;
+  padding-bottom: 1rem;
+}
+
+.left {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.right {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.tags {
+  grid-column: 3;
+  grid-row: 2;
+  padding: 2rem;
+}
+
+
+/* footer */
+#footer {
+  grid-column: 1 / span 3;
+  grid-row: 3;
+  font-size: 90%;
+  font-family: monospace;
+  background-color: black;
+  color: #808080;
+}
+
+#footer .contact {
+  float: left;
+  padding: 2rem;
+}
+
+#footer .social {
+  float: right;
+  padding-top: 2rem;
+  padding-right: 2rem;
+}
+
+#footer .social li {
+  display: inline-block;
+}
+
+#footer .social img {
+  width: 2rem;
+  height: auto;
+  padding-left: 1rem;
 }
