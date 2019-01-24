@@ -6,12 +6,20 @@
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
    <title>Better JS</title>
    <script type="text/javascript" src="scripts/better.js"></script>
+   <style type="text/css">
+      #output {
+         padding: 1rem;
+         background-color: #c0c0ff;
+         border: 1px solid #000040;
+         margin: 1rem;
+      }
+   </style>
 </head>
 <body>
    <h1>What is your name?</h1>
    <div>
-      Age: <input type="text" id="age" />
-      Name: <input type="text" id="name" value="Randy" />
+      Age: <input type="text" id="age" name="age" />
+      Name: <input type="text" id="name" name="name" value="Randy" />
       <button id="sayHi">Say Hi</button>
    </div>
    <div id="output"></div>
