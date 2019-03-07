@@ -1,0 +1,11 @@
+.message {
+   color: red;
+}
+
+.menu li {
+   display: inline-block;
+}
+
+.menu a {
+   padding: 2rem;
+}

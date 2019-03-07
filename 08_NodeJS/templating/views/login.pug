@@ -1,0 +1,14 @@
+extends layout
+block content
+   h1= title
+
+   div(class="error")= errorMessage
+
+   form(method="post", action="/processLogin")
+      label(class="formLabel", for="username") Username:
+      input(type="text", id="username", name="username", placeholder="Username", class="textField")
+
+      label(class="formLabel", for="password") Password:
+      input(type="password", id="password", name="password", placeholder="Password", class="textField")
+
+      button Log In
