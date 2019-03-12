@@ -78,6 +78,20 @@ app.post('/processLogin', function(request, response) {
    }
 });
 
+app.get('/students', function(request, response) {
+   var studentList = [
+      {sid: '100200300', firstName: 'Philip', lastName: 'Fry'},
+      {sid: '100200301', firstName: 'Taranga', lastName: 'Leela'},
+      {sid: '100200302', firstName: 'Bender', lastName: 'Rodriguez'}
+   ];
+
+   response.render('students', {
+      title: 'Class List',
+      students: studentList
+   });
+});
+
+// web listener
 app.set('port', process.env.PORT || 3000);
 app.listen(app.get('port'), function() {
 	console.log('Server listening on port ' + app.get('port'));
