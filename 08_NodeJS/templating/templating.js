@@ -23,7 +23,7 @@ app.use(session({
 }));
 
 // utility functions (read: hacks)
-var usernames = ['bsmith'];
+var usernames = [];
 function userExists(toFind) {
    for (i = 0; i < usernames.length; i++) {
       if (usernames[i] === toFind) {
@@ -65,10 +65,8 @@ app.post('/processLogin', function(request, response) {
       // login success (obviously, not secure)
       request.session.username = username;
 
-      response.render('loginConfirm', {
-         title: 'Login Successful',
-         message: 'You have successfully logged in.'
-      });
+      response.render('loginConfirm', {username: username,
+                                       title: 'Login Successful'});
    } else {
       // login failed
       response.render('login', {
@@ -76,6 +74,32 @@ app.post('/processLogin', function(request, response) {
          errorMessage: 'Login Incorrect.  Please try again.'
       });
    }
+});
+
+app.get('/register', function(request, response) {
+  response.render('register', {title: 'Register'});
+});
+
+app.post('/processRegistration', function(request, response) {
+  var username = request.body.username;
+  var password = request.body.pwd;
+
+  if (userExists(username)) {
+    response.render('register', {title: 'Register',
+                                 errorMessage: 'Username in use'});
+  } else {
+    usernames.push(username);
+
+    request.session.username = username;
+
+    response.render('registerConfirm', {username: username,
+                                        title: 'Welcome aboard!'});
+  }
+});
+
+app.get('/logout', function(request, response) {
+  request.session.username = '';
+  response.redirect('/');
 });
 
 app.get('/students', function(request, response) {

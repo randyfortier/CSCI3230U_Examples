@@ -9,8 +9,12 @@ html
             a(href="/") Home
          li
             a(href="/students") Student List
-         li
-            a(href="/login") Login
-         li
-            a(href="/register") Register
+         if (username && username !== '')
+            li
+               a(href="/logout") Logout
+         else
+            li
+               a(href="/login") Login
+            li
+               a(href="/register") Register
       block content

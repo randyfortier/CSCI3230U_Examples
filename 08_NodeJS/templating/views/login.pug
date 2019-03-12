@@ -4,11 +4,23 @@ block content
 
    div(class="error")= errorMessage
 
-   form(method="post", action="/processLogin")
-      label(class="formLabel", for="username") Username:
-      input(type="text", id="username", name="username", placeholder="Username", class="textField")
+   form(method="post",
+        action="/processLogin"
+        class="form")
+      label(class="label row1",
+            for="username") Username:
+      input(type="text",
+            id="username",
+            name="username",
+            placeholder="Username",
+            class="control row1")
 
-      label(class="formLabel", for="password") Password:
-      input(type="password", id="password", name="password", placeholder="Password", class="textField")
+      label(class="label row2",
+            for="password") Password:
+      input(type="password",
+            id="password",
+            name="password",
+            placeholder="Password",
+            class="control row2")
 
-      button Log In
+      button(class="control row3") Log In
