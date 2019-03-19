@@ -9,9 +9,15 @@ var bcrypt = require('bcrypt-nodejs');
 
 // database config
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost:21017/university');
+mongoose.connect('mongodb://localhost:27017/university',
+                 { useNewUrlParser: true },
+                 function(error) {
+                    if (error) {
+                       return console.error('Unable to connect:', error);
+                    }
+                 });
                  //, {useMongoClient: true});
-
+mongoose.set('useCreateIndex', true);
 
 // middleware
 app.use(express.static('public'));
