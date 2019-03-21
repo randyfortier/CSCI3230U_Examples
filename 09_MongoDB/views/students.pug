@@ -9,8 +9,27 @@ block content
          th SID
          th First Name
          th Last Name
+         th GPA
+         th Action
       each student in students
          tr
             td= student.sid
             td= student.firstName
             td= student.lastName
+            td= student.gpa
+            td
+               form(action='/deleteStudent',method='post')
+                  input(type='hidden', name='sid', value=student.sid)
+                  button(type='submit') Delete
+
+   form(action='/addOrUpdateStudent', method='post')
+      div
+         input(type='text',name='sid',placeholder='Student ID')
+      div
+         input(type='text',name='firstName',placeholder='First Name')
+      div
+         input(type='text',name='lastName',placeholder='Last Name')
+      div
+         input(type='text',name='gpa',placeholder='GPA')
+      div
+         button(type='submit') Add or Update

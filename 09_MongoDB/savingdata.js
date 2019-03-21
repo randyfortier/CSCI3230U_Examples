@@ -9,19 +9,22 @@ var bcrypt = require('bcrypt-nodejs');
 
 // database config
 mongoose.Promise = global.Promise
-mongoose.connect('mongodb://localhost:27017/university',
-                 { useNewUrlParser: true },
-                 function(error) {
-                    if (error) {
-                       return console.error('Unable to connect:', error);
-                    }
-                 });
-                 //, {useMongoClient: true});
+mongoose.connect('mongodb://localhost:27017/university', {
+      useNewUrlParser: true
+   },
+   function(error) {
+      if (error) {
+         return console.error('Unable to connect:', error);
+      }
+   });
+//, {useMongoClient: true});
 mongoose.set('useCreateIndex', true);
 
 // middleware
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({
+   extended: false
+}));
 
 // configure the templating engine
 app.set('views', __dirname + '/views');
@@ -29,7 +32,9 @@ app.set('view engine', 'pug');
 
 // configure sessions
 app.use(session({
-   genid: function(request) { return uuid(); },
+   genid: function(request) {
+      return uuid();
+   },
    resave: false,
    saveUninitialized: false,
    // cookie: {secure: true},
@@ -38,6 +43,7 @@ app.use(session({
 
 // utility functions (read: hacks)
 var usernames = [];
+
 function userExists(toFind) {
    for (i = 0; i < usernames.length; i++) {
       if (usernames[i] === toFind) {
@@ -57,7 +63,9 @@ var userSchema = new Schema({
    },
    email: String,
    hashedPassword: String
-}, {collection: 'users'});
+}, {
+   collection: 'users'
+});
 var User = mongoose.model('user', userSchema);
 
 var studentSchema = new Schema({
@@ -78,7 +86,9 @@ var studentSchema = new Schema({
    },
    startDate: Date,
    fullTime: Boolean
-}, {collection: 'students'});
+}, {
+   collection: 'students'
+});
 var Student = mongoose.model('student', studentSchema);
 
 // routes
@@ -107,6 +117,65 @@ app.get('/students', function(request, response) {
    reloadStudentList(request, response, '');
 });
 
+app.post('/deleteStudent', function(request, response) {
+   sid = request.body.sid;
+   Student.remove({
+      sid: sid
+   }, function(error) {
+      if (error) {
+         reloadStudentList(request, response, 'Unable to delete student');
+      } else {
+         reloadStudentList(request, response, 'Student deleted');
+      }
+   });
+});
+
+app.post('/addOrUpdateStudent', function(request, response) {
+   sid = request.body.sid;
+   firstName = request.body.firstName;
+   lastName = request.body.lastName;
+   gpa = parseFloat(request.body.gpa);
+
+   studentData = {
+      sid: sid,
+      firstName: firstName,
+      lastName: lastName,
+      gpa: gpa
+   };
+
+   Student.find({
+      sid: sid
+   }).then(function(results) {
+      if (results.length > 0) {
+         // update an existing student
+         Student.updateOne({
+               sid: sid
+            },
+            studentData,
+            function(error, numAffected) {
+               if (error != null || numAffected != 1) {
+                  console.log('update error:', error);
+
+                  reloadStudentList(request, response, 'Unable to update student');
+               } else {
+                  reloadStudentList(request, response, 'Student updated');
+               }
+            });
+      } else {
+         // add a new student
+         newStudent = new Student(studentData);
+         newStudent.save(function(error) {
+            if (error != null) {
+               console.log('add error:', error);
+               reloadStudentList(request, response, 'Unable to add student');
+            } else {
+               reloadStudentList(request, response, 'Student added');
+            }
+         });
+      }
+   });
+});
+
 app.get('/login', function(request, response) {
    response.render('login', {
       title: 'Login Page',
@@ -118,49 +187,81 @@ app.post('/processLogin', function(request, response) {
    username = request.body.username;
    password = request.body.password;
 
-   if (userExists(username)) {
-      // login success (obviously, not secure)
-      request.session.username = username;
-
-      response.render('loginConfirm', {username: username,
-                                       title: 'Login Successful'});
-   } else {
-      // login failed
+   User.find({username: username}).then(function(results) {
+      if (results.length != 1) {
+         console.log('login: no user found');
+         // error logging in - no such user
+         response.render('login', {
+            errorMessage: 'Login Incorrect'
+         });
+      } else {
+         // user was found, now check the password
+         console.log('login password:', results[0].hashedPassword);
+         if (bcrypt.compareSync(password, results[0].hashedPassword)) {
+            // password match - successful login
+            request.session.username = username;
+            response.render('loginConfirm', {
+               username: username,
+               title: 'Login Success'
+            });
+         } else {
+            console.log('login: password is not a match');
+            // error logging in - invalid password
+            response.render('login', {
+               errorMessage: 'Login Incorrect'
+            });
+         }
+      }
+   }).catch(function(error) {
+      // error logging in - no such user
+      console.log('login: catch');
       response.render('login', {
-         title: 'Login Page',
-         errorMessage: 'Login Incorrect.  Please try again.'
+         errorMessage: 'Login Incorrect'
       });
-   }
+   });
 });
 
 app.get('/register', function(request, response) {
-  response.render('register', {title: 'Register'});
+   response.render('register', {
+      title: 'Register'
+   });
 });
 
 app.post('/processRegistration', function(request, response) {
-  var username = request.body.username;
-  var password = request.body.pwd;
+   username = request.body.username;
+   email = request.body.email;
+   password = request.body.pwd;
 
-  if (userExists(username)) {
-    response.render('register', {title: 'Register',
-                                 errorMessage: 'Username in use'});
-  } else {
-    usernames.push(username);
+   hashedPassword = bcrypt.hashSync(password);
+   console.log('register password:', hashedPassword);
 
-    request.session.username = username;
+   newUser = new User({
+      username: username,
+      email: email,
+      hashedPassword: hashedPassword
+   });
 
-    response.render('registerConfirm', {username: username,
-                                        title: 'Welcome aboard!'});
-  }
+   newUser.save(function(error) {
+      if (error) {
+         response.render('register',
+                         {errorMessage: 'Invalid registration data'});
+      } else {
+         request.session.username = username; // logged in
+         response.render('registerConfirm', {
+            username: username,
+            title: 'Welcome aboard!'
+         });
+      }
+   });
 });
 
 app.get('/logout', function(request, response) {
-  request.session.username = '';
-  response.redirect('/');
+   request.session.username = '';
+   response.redirect('/');
 });
 
 // web listener
 app.set('port', process.env.PORT || 3000);
 app.listen(app.get('port'), function() {
-	console.log('Server listening on port ' + app.get('port'));
+   console.log('Server listening on port ' + app.get('port'));
 });
