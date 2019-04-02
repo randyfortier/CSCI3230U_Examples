@@ -1,7 +1,7 @@
 $.support.cors = true;
 
 $(document).ready(function() {
-   key = 'BLOCKED';  // seriously?  again?
+   key = 'BLOCKED';
 
    $('#searchButton').click(function() {
       query = $('#query').val();
