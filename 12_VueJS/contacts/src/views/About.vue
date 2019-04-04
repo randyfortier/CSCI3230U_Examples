@@ -1,5 +1,11 @@
 <template>
   <div class="about">
-    <h1>This is an about page</h1>
+   <h2>Contact manager is a...</h2>
   </div>
 </template>
+
+<style scoped lang="scss">
+.about {
+   margin: 1rem;
+}
+</style>
