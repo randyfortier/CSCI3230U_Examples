@@ -1,9 +1,10 @@
 <template>
-  <div class="about">
-   <h2>Contact manager is a...</h2>
-  </div>
+<div class="about">
+   <p>Contact Manager is an efficient tool for finding, organizing, and messaging your personal or professional contacts.</p>
+</div>
 </template>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .about {
    margin: 1rem;

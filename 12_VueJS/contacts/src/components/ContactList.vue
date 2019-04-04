@@ -12,10 +12,10 @@
       </thead>
       <tbody>
          <tr v-bind:key="contact.id" v-for="contact in contacts">
-            <td>{{ contact.name }}</td>
-            <td>{{ contact.phone }}</td>
-            <td>{{ contact.email }}</td>
-            <td>{{ contact.website }}</td>
+            <td>{{contact.name}}</td>
+            <td>{{contact.phone}}</td>
+            <td>{{contact.email}}</td>
+            <td>{{contact.website}}</td>
             <td><img src="../assets/delete.png" @click="$emit('delete-contact', contact.id)" class="delete" /></td>
          </tr>
       </tbody>
@@ -24,37 +24,45 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 export default {
-  name: 'ContactList',
-  props: {
-   contacts: Array
-  }
+   name: "ContactList",
+   props: {
+      contacts: Array
+   }
 };
 </script>
 
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 table {
-   border: 2px solid #1673bd;
-   border-radius: 3px;
-   background-color: #fff;
-   margin-left: auto;
-   margin-right: auto;
-   font-size: 90%;
+    border: 2px solid #1673bd;
+    border-radius: 3px;
+    background-color: #fff;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 90%;
 
-   th {
-      background-color: #2c3e50;
-      color: rgba(255, 255, 255, 0.66);
-      cursor: pointer;
-   }
+    th {
+        background-color: #2c3e50;
+        color: rgba(255,255,255,0.66);
+        cursor: pointer;
+    }
 
-   td {
-      background-color: #f9f9f9;
+    td {
+        background-color: #f9f9f9;
 
-      .delete {
-         width: 1rem;
-         height: auto;
-         cursor: pointer;
-      }
-   }
+        .delete {
+           width: 1rem;
+           height: auto;
+           cursor: pointer;
+        }
+    }
+
+    td,th {
+        min-width: 120px;
+        padding: 10px 20px;
+    }
 }
 </style>
