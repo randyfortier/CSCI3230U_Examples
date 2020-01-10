@@ -1,0 +1,22 @@
+body {
+   font-family: Verdana;
+   font-size: 90%;
+   margin: 0;
+   display: grid;
+   grid-template-rows: 18rem auto 6rem;
+   grid-template-columns: 3fr 3fr 1fr;
+   grid-column-gap: 5rem;
+}
+
+.header {
+   grid-column: 1 / span 3;
+   grid-row: 1;
+
+   background-image: url('../images/hacker_background.png');
+   background-repeat: no-repeat;
+   background-size:  800px auto;
+   background-color: black;
+
+   font-family: monospace;
+   color: #808080;
+}
