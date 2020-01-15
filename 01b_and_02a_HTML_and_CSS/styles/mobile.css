@@ -1,0 +1,60 @@
+body {
+    grid-template-rows: 18rem auto auto auto 6rem;
+}
+
+/* header */
+.header .title {
+    margin-top: 3rem;
+    font-size: 200%;
+}
+
+#menu {
+    margin-top: 1rem;
+}
+
+#menu li {
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.subscribe {
+    margin-left: 3rem;
+    margin-top: 10rem;
+}
+
+.subscribe .button {
+    padding-left: 1rem;
+}
+
+/* main */
+.left {
+    padding: 1rem;
+    grid-row: 2;
+    grid-column: 1 / span 3;
+}
+
+.right {
+    padding: 1rem;
+    grid-row: 3;
+    grid-column: 1 / span 3;
+}
+
+.tags {
+    padding: 1rem;
+    grid-row: 4;
+    grid-column: 1 / span 3;
+}
+
+/* footer */
+.footer {
+    grid-row: 5;
+}
+
+.footer .contact, .footer .social {
+    float: none;
+    padding: 1rem;
+}
+
+.footer img {
+    width: 1rem;
+}
