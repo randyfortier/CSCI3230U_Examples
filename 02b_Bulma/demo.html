@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<!-- CSCI 3230U - CSS Frameworks -->
 <html lang="en">
 
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css" />
+   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
    <script src="scripts/mobile_menu.js"></script>
    <script src="scripts/tabs.js"></script>
    <script src="scripts/modal.js"></script>
@@ -13,7 +15,186 @@
 </head>
 
 <body>
-   <!-- demo goes here -->
+   <!-- nav bar -->
+   <nav class="navbar" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+         <a class="navbar-item" href="https://bugpharma.com">
+            <img src="images/logo.png" width="60" height="70" alt="BugPharma" />
+         </a>
+
+         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+         </a>
+      </div>
+
+      <div id="navbarExample" class="navbar-menu">
+         <div class="navbar-start">
+            <a class="navbar-item" href="#">Home</a>
+            <div class="navbar-item has-dropdown is-hoverable">
+               <a class="navbar-link">Products</a>
+               <div class="navbar-dropdown">
+                  <a class="navbar-item">Rad Grow</a>
+                  <a class="navbar-item">Fire Breath</a>
+                  <hr class="navbar-divider">
+                  <a class="navbar-item">Armour Plating</a>
+               </div>
+               <a class="navbar-item" href="#">Contact Us</a>
+            </div>
+         </div>
+
+         <div class="navbar-end">
+            <div class="navbar-item">
+               <div class="buttons">
+                  <a class="button is-danger">Sign-up</a>
+                  <a class="button is-light">Log in</a>
+               </div>
+            </div>
+         </div>
+      </div>
+   </nav>
+
+   <div class="container">
+
+      <div class="hero is-info">
+         <div class="hero-body">
+            <div class="container has-text-centered">
+               <h1 class="title">Bug Pharma set to take over the economy!</h1>
+            </div>
+         </div>
+      </div>
+
+      <div class="tabs">
+         <ul>
+            <li class="tab is-active" onclick="openTab(event,'table')"><a>Table of Controls</a></li>
+            <li class="tab" onclick="openTab(event,'card')"><a>Card</a></li>
+            <li class="tab" onclick="openTab(event,'panel')"><a>Panel</a></li>
+            <li class="tab" onclick="openTab(event,'form')"><a>Form</a></li>
+         </ul>
+      </div>
+
+      <!-- table with basic components -->
+      <div id="table" class="content-tab">
+         <table class="table is-bordered">
+            <thead>
+               <tr>
+                  <th>Component</th>
+                  <th>Example</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>Button</td>
+                  <td>
+                     <a class="button modal-button is-dark" data-target="test-modal">Click Me</a>
+                     <div class="modal" id="test-modal">
+                        <div class="modal-background"></div>
+                        <div class="modal-content">
+                           <div class="box">Please enjoy this modal!</div>
+                        </div>
+                        <button class="modal-close is-large" aria-label="close">Close</button>
+                     </div>
+                  </td>
+               </tr>
+               <tr>
+                  <td>Notification</td>
+                  <td>
+                     <div class="notification is-light">
+                        <button class="delete"></button>
+                        Your order is ready!
+                     </div>
+                  </td>
+               </tr>
+               <tr>
+                  <td>Progress Bar</td>
+                  <td><progress class="progress is-link" value="75" max="100">75%</progress></td>
+               </tr>
+               <tr>
+                  <td>Tag</td>
+                  <td><span class="tag is-warning">5 minutes ago</span></td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+
+      <div id="card" class="content-tab" style="display:none">
+         <div class="card" style="width: 20rem">
+            <div class="card-image">
+               <figure class="image is-4by3">
+                  <img src="https://picsum.photos/200/150" alt="Profile Pic">
+               </figure>
+            </div>
+            <div class="card-content">
+               <div class="media">
+                  <div class="media-left">
+                     <figure class="image is-48x48">
+                        <img src="https://picsum.photos/48/48" alt="Icon">
+                     </figure>
+                  </div>
+                  <div class="media-content">
+                     <p class="title is-5">Mohan Sarfan</p>
+                     <p class="subtitle is-6">mohan@bugpharma.com</p>
+                  </div>
+               </div>
+
+               <div class="content">
+                  Product engineer
+                  <br>
+                  <time datetime="2020-1-1">9:00 AM - 1 Jan 2020</time>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div id="panel" class="content-tab" style="display:none">
+         <nav class="panel">
+            <p class="panel-heading">
+               Profile
+            </p>
+            <div class="panel-block">
+               <p>
+                  This is a panel
+               </p>
+            </div>
+         </nav>
+      </div>
+
+      <div id="form" class="content-tab" style="display:none">
+         <div class="field">
+            <label class="label">E-Mail</label>
+            <div class="control has-icons-left has-icons-right">
+               <input class="input is-success" type="email" placeholder="E-Mail address" value="mohan@bugpharma.com" />
+               <span class="icon is-small is-left">
+                  <i class="fas fa-user"></i>
+               </span>
+               <span class="icon is-small is-right">
+                  <i class="fas fa-check"></i>
+               </span>
+            </div>
+            <p class="help is-success">This E-Mail is available</p>
+         </div>
+
+         <div class="field">
+            <label class="label">Password</label>
+            <div class="control has-icons-left has-icons-right">
+               <input class="input is-danger" type="password" placeholder="Password" value="open sesame">
+               <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+               </span>
+               <span class="icon is-small is-right">
+                  <i class="fas fa-exclamation-triangle"></i>
+               </span>
+            </div>
+            <p class="help is-danger">This password does not meet our minimum requirements</p>
+         </div>
+         <div class="field">
+            <div class="control">
+               <button class="button is-link">Register</button>
+            </div>
+         </div>
+      </div>
+   </div>
 </body>
 
 </html>
