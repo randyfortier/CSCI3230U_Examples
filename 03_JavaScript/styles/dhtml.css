@@ -1,0 +1,15 @@
+.selected {
+   background-color: lightBlue;
+}
+
+.interesting {
+   background-color: lightgray;
+}
+
+body {
+   margin: 2rem;
+}
+
+div {
+   margin-top: 2rem;
+}

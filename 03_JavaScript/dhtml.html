@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!-- CSCI 3230U - JavaScript -->
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>Dynamic HTML</title>
+   <link rel="stylesheet" type="text/css" href="styles/dhtml.css" />
+   <script type="text/javascript" src="scripts/dhtml.js"></script>
+</head>
+<body>
+   <p>This is a <span class="emph">paragraph</span></p>
+   <ol id="coolPlaces" class="interesting">
+      <li>Paris</li>
+      <li>Barcelona</li>
+      <li>Canada
+         <ul>
+            <li>Toronto</li>
+            <li>Brampton</li>
+            <li>Oshawa</li>
+         </ul>
+      </li>
+      <li>New York</li>
+   </ol>
+   <table class="table">
+      <thead>
+         <tr>
+            <th>Month</th>
+            <th>Units Sold</th>
+         </tr>
+      </thead>
+      <tbody>
+         <tr>
+            <td>August</td>
+            <td>12 603</td>
+         </tr>
+         <tr>
+            <td>September</td>
+            <td>11 385</td>
+         </tr>
+         <tr>
+            <td>October</td>
+            <td>10 503</td>
+         </tr>
+      </tbody>
+   </table>
+
+   <!-- playground -->
+   <div>
+      <button id="resetButton">Reset</button>
+      <button id="parentButton">Parent</button>
+      <button id="previousButton">Previous Sibling</button>
+      <button id="nextButton">Next Sibling</button>
+      <button id="firstButton">First Child</button>
+      <button id="lastButton">Last Child</button>
+   </div>
+
+   <div>
+      <label for="visibilityList">Visibility:</label>
+      <select name="visibilityList" id="visibilityList">
+         <option>block</option>
+         <option>inline</option>
+         <option>none</option>
+      </select>
+   </div>
+
+   <div>
+      <label for="newPlaceField">New Place:</label>
+      <input type="text" name="newPlaceField" id="newPlaceField" />
+      <button id="addButton">Add</button>
+   </div>
+
+   <div>
+      <label for="searchType">Search for element:</label>
+      <select name="searchType" id="searchType">
+         <option value="tag">by tag name</option>
+         <option value="name">by name</option>
+         <option value="class">by CSS class</option>
+      </select>
+      <label for="searchKey">Query string:</label>
+      <input type="text" name="searchKey" id="searchKey" />
+      <button id="searchButton">Search</button>
+   </div>
+
+   <div id="output"></div>
+</body>
+</html>

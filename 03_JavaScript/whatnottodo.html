@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- CSCI 3230U - JavaScript -->
+<!-- Many of the techniques used in this example are bad practices -->
+<!-- Do not use -->
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+   <title>What not to do in JS</title>
+   <script type="text/javascript">
+    // 1. code directly inside the HTML (not reusable, difficult to parse)
+    // 2. popups are very awkward, both to debug and for users
+    // 3. code not inserted in any event handler (could execute before DOM load)
+    window.alert('Hello from JavaScript!');
+    var name = window.prompt('What is your name?');
+   </script>
+</head>
+<body>
+   <h1>What not to do in JS</h1>
+   <div>
+      <!-- 4. Popups again, but also JavaScript awkwardly in HTML attribs -->
+      Every time you use a <a href="javascript:alert('Moar Popups!')">popups</a>,
+      a kitten dies.
+   </div>
+</body>
+</html>
