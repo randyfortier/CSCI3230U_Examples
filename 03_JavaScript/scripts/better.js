@@ -96,7 +96,23 @@ let odds = {
 };
 
 async function testPromises() {
+    wait(500).then(() => {
+        log('Wait #1 is done');
+        return wait(1000);
+    }).then(() => {
+        log('Wait #2 is done');
+    }).catch((err) => {
+        log(`An error has occurred: ${err}`);
+    });
 
+    divideLater(15, 0, 1000).then((result) => {
+        log(`The result of 15/0 is ${result}`);
+    }).catch((err) => {
+        log(`Error:  ${err}`);
+    });
+
+    let result = await divideLater(15, 3, 1000);
+    log('Result (await): ' + result);
 }
 
 function wait(howLong = 0) {
@@ -106,6 +122,16 @@ function wait(howLong = 0) {
 }
 
 async function divideLater(a, b, delay) {
-
+    return new Promise((resolve, reject) => {
+        if (b == 0) {
+            // no can do
+            reject('Cannot divide by zero');
+        } else {
+            setTimeout(() => {
+                // safe to divide
+                resolve(a / b);
+            }, delay);
+        } 
+    });
 }
 
