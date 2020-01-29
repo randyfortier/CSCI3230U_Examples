@@ -13,6 +13,50 @@ window.onload = function() {
         select(currentElement.parentElement);
     };
 
+    let previousButton = document.getElementById('previousButton');
+    previousButton.onclick = function() {
+        select(currentElement.previousElementSibling);
+    };
+
+    let nextButton = document.getElementById('nextButton');
+    nextButton.onclick = function() {
+        select(currentElement.nextElementSibling);
+    };
+
+    let firstButton = document.getElementById('firstButton');
+    firstButton.onclick = function() {
+        select(currentElement.firstElementChild);
+    };
+
+    let lastButton = document.getElementById('lastButton');
+    lastButton.onclick = function() {
+        select(currentElement.lastElementChild);
+    };
+
+    let visibilityList = document.getElementById('visibilityList');
+    visibilityList.onchange = function() {
+        let index = visibilityList.selectedIndex;
+        let value = visibilityList.options[index].text;
+        currentElement.style.display = value;
+    };
+
+    let addButton = document.getElementById('addButton');
+    addButton.onclick = function() {
+        // get the value to be inserted
+        let newPlaceField = document.getElementById('newPlaceField');
+        let newPlace = newPlaceField.value;
+
+        // dynamically create new DOM nodes
+        let content = document.createTextNode(newPlace);
+        let newListItem = document.createElement('li');
+        newListItem.appendChild(content);
+
+        // insert the new element into the DOM
+        let coolPlaces = document.getElementById('coolPlaces');
+        coolPlaces.appendChild(newListItem);
+    };
+
+
 };
 
 var currentElement;
