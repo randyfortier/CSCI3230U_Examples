@@ -6,5 +6,6 @@ var provinces = {
 $(document).ready(function() {
     $('#btnRegister').click(function() {
         console.log('Register button clicked');
+        return false;
     });
 });

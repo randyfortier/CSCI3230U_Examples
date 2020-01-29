@@ -56,7 +56,36 @@ window.onload = function() {
         coolPlaces.appendChild(newListItem);
     };
 
-
+    let searchButton = document.getElementById('searchButton');
+    searchButton.onclick = function() {
+       searchTypeField = document.getElementById('searchType');
+       searchType = searchTypeField.value;
+ 
+       searchKeyField = document.getElementById('searchKey');
+       searchKey = searchKeyField.value;
+ 
+       var foundElement = '';
+       if (searchType === 'tag') {
+          let results = document.getElementsByTagName(searchKey);
+          if (results.length > 0) {
+             foundElement = results[0];
+          }
+       } else if (searchType == 'name') {
+          let results = document.getElementsByName(searchKey);
+          if (results.length > 0) {
+             foundElement = results[0];
+          }
+       } else if (searchType == 'class') {
+          let results = document.getElementsByClassName(searchKey);
+          if (results.length > 0) {
+             foundElement = results[0];
+          }
+       }
+ 
+       if (foundElement !== '') {
+          select(foundElement);
+       }
+    }; 
 };
 
 var currentElement;
