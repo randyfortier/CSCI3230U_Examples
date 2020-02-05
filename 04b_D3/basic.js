@@ -25,8 +25,74 @@ window.onload = function() {
                      .domain(salesData.map((s) => s.year))
                      .padding(0.3);
     
-    const yScale = d3.scaleBand()
+    const yScale = d3.scaleLinear()
                      .range([chartHeight, 0])
                      .domain([0, 2200]);
     
+    const svg = d3.select('body')
+                  .append('svg')
+                    .attr('width', width)
+                    .attr('height', height);
+    
+    const canvas = svg.append('g')
+                        .attr('transform', `translate(${margin}, ${margin})`);
+    
+    // chart title
+    svg.append('text')
+          .attr('x', margin + chartWidth / 2)
+          .attr('y', margin)
+          .attr('text-anchor', 'middle')
+          .text('Sales by Year');
+
+    // x-axis and label
+    canvas.append('g')
+             .attr('transform', `translate(${margin}, ${chartHeight})`)
+             .call(d3.axisBottom(xScale));
+
+    svg.append('text')
+           .attr('x', margin + chartWidth / 2 + margin)
+           .attr('y', chartHeight + 2 * margin - 15)
+           .attr('text-anchor', 'middle')
+           .text('Year');
+
+    // y-axis and label
+    canvas.append('g')
+             .attr('transform', `translate(${margin}, 0)`)
+             .call(d3.axisLeft(yScale));
+
+    svg.append('text')
+           .attr('x', -margin + -(chartWidth / 2))
+           .attr('y', margin)
+           .attr('transform', 'rotate(-90)')
+           .attr('text-anchor', 'middle')
+           .text('Sales ($)');
+    
+    // the bar chart
+    const bars = canvas.selectAll('rect')
+                       .data(salesData)
+                       .enter()
+                          .append('rect')
+                              .attr('x', (data) => margin + xScale(data.year))
+                              .attr('y', chartHeight)
+                              .attr('height', 0)
+                              .attr('width', xScale.bandwidth())
+                              .attr('fill', (data) => colourScale(data.sales))
+                              .on('mouseenter', function(source, index) {
+                                  d3.select(this)
+                                    .transition()
+                                    .duration(200)
+                                    .attr('opacity', 0.5);
+                              })
+                              .on('mouseleave', function(source, index) {
+                                d3.select(this)
+                                    .transition()
+                                    .duration(200)
+                                    .attr('opacity', 1.0);
+                              });
+    bars.transition()
+        .ease(d3.easeElastic)
+        .duration(800)
+        .delay((data, index) => index * 50)
+        .attr('y', (data) => yScale(data.sales))
+        .attr('height', (data) => chartHeight - yScale(data.sales));
 };
