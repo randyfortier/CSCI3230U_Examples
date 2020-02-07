@@ -1,0 +1,2 @@
+This is a simple message.
+It will be used for testing plaintext retrieval.
