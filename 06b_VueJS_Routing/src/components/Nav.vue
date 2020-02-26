@@ -3,13 +3,31 @@
         <router-link to="/">Home</router-link> |
         <router-link to="/about">About</router-link> |
         <router-link to="/contacts">Contacts</router-link> |
-        <router-link to="/login">Login</router-link>
+        <router-link v-if="!loggedIn" to="/login">Login</router-link>
+        <a v-if="loggedIn" v-on:click="logout">Log out</a>
     </div>
 </template>
 
 <script>
+import auth from '../auth.js';
+
 export default {
-    name: 'Nav'
+    name: 'Nav',
+    data() {
+        return {
+            loggedIn: auth.loggedIn(),
+        };
+    },
+    create() {
+        auth.onLoginStatusChanged = (loggedIn) => {
+            this.loggedIn = auth.loggedIn();
+        };
+    },
+    methods: {
+        logout: function() {
+            auth.logout((response) => {});
+        },
+    },
 };
 </script>
 
