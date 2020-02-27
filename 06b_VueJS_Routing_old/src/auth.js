@@ -2,18 +2,23 @@ import axios from 'axios';
 
 export default {
     login(username, password, callback) {
+        if (localStorage.token) {
+            callback({authenticated: false});
+            this.onLoginStatusChanged(true);
+            return;
+        }
+
         authenticationRequest(username, password, (response) => {
             if (response.authenticated) {
                 localStorage.token = response.token;
-                this.onLoginStatusChanged(true);
                 callback({
                    authenticated: true,
                    token: response.token, 
                 });
             } else {
                 delete localStorage.token;
-                this.onLoginStatusChanged(false);
                 callback({authenticated: false});
+                this.onLoginStatusChanged(false);
             }
         });
     },
@@ -25,9 +30,6 @@ export default {
     },
 
     loggedIn() {
-        console.log('loggedIn()::');
-        console.log(localStorage.token);
-        console.log(!!localStorage.token);
         return !!localStorage.token;
     },
 
@@ -52,7 +54,6 @@ function authenticationRequest(username, password, callback) {
     console.log(`url: ${url}`);
     axios.get(url).then((result) => {
         if (result.data.length > 0) {
-            console.log('Authenticated (placeholder API)');
             callback({
                 authenticated: true,
                 token: Math.random().toString(36).substring(7),

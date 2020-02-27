@@ -27,10 +27,10 @@ export default {
   },
   methods: {
     deleteContact(id) {
-      console.log(id);
+
     },
     addContact(newContact) {
-      console.log(newContact);
+
     },
   },
 }

@@ -20,30 +20,28 @@
 </template>
 
 <script>
-import auth from '../auth';
+import auth from '../auth.js';
 
 export default {
-  name: 'LoginForm',
-  data() {
-    return {
-      username: 'Bret',
-      password: 'Sincere@april.biz',
-      errorMessage: ''
+    name: 'LoginForm',
+    data() {
+        return {
+            username: 'Bret',
+            password: 'Sincere@april.biz',
+            errorMessage: '',
+        };
+    },
+    methods: {
+        login() {
+            auth.login(this.username, this.password, (response) => {
+                if (!response.authenticated) {
+                    this.errorMessage = 'Login Incorrect';
+                } else {
+                    this.$router.replace(this.$route.query.redirect || '/');
+                }
+            });
+        }
     }
-  },
-  methods: {
-      login() {
-         auth.login(this.username, this.password, (response) => {
-            if (!response.authenticated) {
-               // login incorrect, display error message
-               this.errorMessage = 'Login Incorrect';
-            } else {
-               // logged in, redirect to index page
-               this.$router.replace(this.$route.query.redirect || '/');
-            }
-         })
-      }
-   }
 }
 </script>
 

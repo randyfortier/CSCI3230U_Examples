@@ -1,36 +1,33 @@
 <template>
     <div id="nav">
         <router-link to="/">Home</router-link> |
-        <router-link to="/contacts">Contacts</router-link> |
         <router-link to="/about">About</router-link> |
-        <router-link v-if="!loggedIn" to="/login">Log in</router-link>
+        <router-link to="/contacts">Contacts</router-link> |
+        <router-link v-if="!loggedIn" to="/login">Login</router-link>
         <a v-if="loggedIn" v-on:click="logout">Log out</a>
     </div>
 </template>
 
 <script>
-import auth from '../auth'
+import auth from '../auth.js';
 
 export default {
-   name: "Header",
-   data() {
-      return {
-         loggedIn: auth.loggedIn()
-      }
-   },
-   created() {
-      auth.onLoginStatusChanged = loggedIn => {
-        console.log(`onLoginStatusChanged::loggedIn = ${loggedIn}`);
-        this.loggedIn = loggedIn;
-      }
-   },
-   methods: {
-      logout: function() {
-         auth.logout((response) => {
-             console.log(response);
-         });
-      }
-   },
+    name: 'Nav',
+    data() {
+        return {
+            loggedIn: auth.loggedIn(),
+        };
+    },
+    create() {
+        auth.onLoginStatusChanged = (loggedIn) => {
+            this.loggedIn = auth.loggedIn();
+        };
+    },
+    methods: {
+        logout: function() {
+            auth.logout((response) => {});
+        },
+    },
 };
 </script>
 
