@@ -27,10 +27,21 @@ export default {
   },
   methods: {
     deleteContact(id) {
-      console.log(id);
+      axios.delete(`https://jsonplaceholder.typicode.com/users/${id}`)
+           .then(() => {
+             this.contacts = this.contacts.filter((contact) => contact.id !== id);
+           })
+           .catch((error) => console.log(error));
     },
     addContact(newContact) {
-      console.log(newContact);
+      const {
+        name, phone, email, website
+      } = newContact;
+      axios.post('https://jsonplaceholder.typicode.com/users', {
+        name, phone, email, website
+      }).then((response) => {
+        this.contacts = [...this.contacts, response.data];
+      }).catch((error) => console.log(error));
     },
   },
 }
