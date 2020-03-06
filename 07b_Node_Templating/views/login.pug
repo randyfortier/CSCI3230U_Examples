@@ -1,14 +1,23 @@
 extends layout
 block content
-    h1= title
+    div(class="container")
+        h1= title
 
-    div= errorMessage 
+        div= errorMessage 
 
-    form(action="/processLogin", method="post")
-        label(class="form-element", for="username") Username:
-        input(type="text", name="username", id="username",placeholder="Username")
+        form(action="/processLogin", method="post", class="loginForm")
+            div(class="field")
+                label(class="form-element", for="username") Username:
+                div(class="control has-icons-left has-icons-right")
+                    input(type="text", class="input is-success", name="username", id="username",placeholder="Username")
+                    span(class="icon is-small is-right")
+                        i(class="fas fa-user")
 
-        label(class="form-element", for="password") Password:
-        input(type="text", name="password", id="password",placeholder="Password")
+            div(class="field")
+                label(class="form-element", for="password") Password:
+                div(class="control has-icons-left has-icons-right")
+                    input(type="password", class="input is-success", name="password", id="password",placeholder="Password")
+                    span(class="icon is-small is-right")
+                        i(class="fas fa-exclamation-triangle")
 
-        button Sign In
+            button Sign In

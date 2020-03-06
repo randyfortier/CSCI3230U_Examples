@@ -1,2 +1,11 @@
-body {
+.container {
+    margin-top: 5rem;
+}
+
+.loginForm {
+    margin-top: 2rem;
+}
+
+.input {
+    width:  20rem;
 }
