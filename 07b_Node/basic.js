@@ -2,6 +2,10 @@ let express = require('express');
 let app = express();
 let session = require('express-session');
 let uuid = require('uuid/v1');
+let bodyParser = require('body-parser');
+
+// middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.static('public'));
 app.use(session({
@@ -26,7 +30,20 @@ app.get('/cats', (request,response) => {
     response.sendFile(__dirname + '/public/cats.html');
 });
 
+app.post('/processLogin', (request, response) => {
+    if (request.body.username === 'admin' &&
+        request.body.password === '123') {
+        response.send('You have successfully logged in!');
+    } else {
+        response.send('Login incorrect!');
+    }
+});
 
+app.get('/chat/:userid/:groupid', (request, response) => {
+    let userId = request.params.userid;
+    let groupId = request.params.groupid;
+    response.send(`User ${userId} is chatting in group ${groupId}`);
+});
 
 app.set('port', 3000);
 
