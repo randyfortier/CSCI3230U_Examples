@@ -1,0 +1,10 @@
+extends layout
+block content
+    div(class="container")
+        h1= title
+        p= description 
+
+        if (!username || username === '')
+            p You are not logged in.
+        else 
+            p You are logged in as #{username}.

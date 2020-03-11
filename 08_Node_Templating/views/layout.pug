@@ -4,6 +4,8 @@ html
         title= title
         link(rel="stylesheet", 
              href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css")
+        script(src="https://code.jquery.com/jquery-3.4.1.min.js", integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=", crossorigin="anonymous")
+        script(src="https://use.fontawesome.com/releases/v5.3.1/js/all.js")
 
         link(rel="stylesheet", href="/style/main.css")
     body
@@ -33,7 +35,10 @@ html
             div(class="navbar-end")
                 div(class="navbar-item")
                     div(class="buttons")
-                        a(class="button is-danger", href="/register") Sign-up
-                        a(class="button is-light", href="/login") Log in
+                        if (username && username !== '')
+                            a(class="button is-light", href="/logout") Logout
+                        else
+                            a(class="button is-danger", href="/register") Sign-up
+                            a(class="button is-light", href="/login") Log in
 
         block content

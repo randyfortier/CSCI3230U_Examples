@@ -70,7 +70,7 @@ app.post('/processLogin', (request, response) => {
     let password = request.body.password;
 
     if (usernameExists(username)) {
-        // TODO: Check the password
+        // TODO: Check the password (in the next section)
         request.session.username = username;
         response.render('loginSuccess', {
             username: username,
@@ -84,6 +84,33 @@ app.post('/processLogin', (request, response) => {
         });
     }
 });
+
+app.get('/register', function(request, response) {
+  response.render('register', {title: 'Register'});
+});
+
+app.post('/processRegistration', function(request, response) {
+  let username = request.body.username;
+  let password = request.body.pwd;
+
+  if (userExists(username)) {
+    response.render('register', {title: 'Register',
+                                 errorMessage: 'Username in use'});
+  } else {
+    usernames.push(username);
+
+    request.session.username = username;
+
+    response.render('registerConfirm', {username: username,
+                                        title: 'Welcome aboard!'});
+  }
+});
+
+app.get('/logout', function(request, response) {
+  request.session.username = '';
+  response.redirect('/');
+});
+
 
 app.set('port', 3000);
 
