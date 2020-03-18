@@ -1,0 +1,13 @@
+extends layout
+block content
+    h1= title 
+    table(class="table")
+        tr 
+            th SID 
+            th First Name 
+            th Last Name 
+        each student in students
+            tr 
+                td= student.sid
+                td= student.firstName 
+                td= student.lastName

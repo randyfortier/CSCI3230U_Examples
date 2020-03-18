@@ -1,0 +1,21 @@
+.table {
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+.table td, .table th {
+    border: 1px solid black;
+    padding: 0.5rem;    
+}
+
+.table th {
+    background-color: #d0d0d0;
+}
+
+form.addChirpForm {
+    margin-top: 1rem;
+}
+
+form.addChirpForm input {
+    margin-bottom: 0.5rem;
+}

@@ -1,0 +1,15 @@
+.container {
+    margin-top: 5rem;
+}
+
+.loginForm {
+    margin-top: 2rem;
+}
+
+.registrationForm {
+    margin-top: 2rem;
+}
+
+.input {
+    width:  20rem;
+}
