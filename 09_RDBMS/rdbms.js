@@ -16,7 +16,7 @@ app.set('view engine', 'pug');
 // setup our database (open/create it, initialize with tables)
 let db = new sqlite3.Database('./data/chirps.db', (error) => {
     if (error) {
-        console.log(error.message);
+        console.error(error.message);
         return;
     }
 
@@ -24,6 +24,8 @@ let db = new sqlite3.Database('./data/chirps.db', (error) => {
 });
 
 db.serialize(() => {
+    // disabled since we are now viewing these in the pug file
+
     /*db.run('DROP TABLE chirps')
     .run(`CREATE TABLE chirps(chirpId INTEGER PRIMARY KEY,
                             sender INTEGER,
@@ -34,7 +36,6 @@ db.serialize(() => {
     .run(`INSERT INTO chirps(sender, sentTime, message) VALUES(1, DATETIME('now'), 'fred was here first!')`)
     .run(`INSERT INTO chirps(sender, sentTime, message) VALUES(2, DATETIME('now'), 'so what?')`)
     .run(`INSERT INTO chirps(sender, sentTime, message) VALUES(1, DATETIME('now'), 'fred is the best!')`)
-    */
     db.each('SELECT message, sentTime FROM chirps WHERE sender = ?', [2], (error, row) => {
         if (error) {
             throw error;
@@ -42,36 +43,40 @@ db.serialize(() => {
 
         console.log(`${row.sentTime}: ${row.message}`);
     });
+    */
 });
 
 db.serialize(() => {
+    // disabled since we're doing this in the Pug file now
+    /*
     let deleteId = -1;
 
-    db.run('INSERT INTO chirps (sender, message) VALUES (?, ?)', [2, 'This is a controversial message'], (error) => {
+    db.run('INSERT INTO chirps (sender, message) VALUES (?, ?)', [2, 'This is a controversial message'], function(error) {
         if (error) {
-            console.log(error.message);
+            console.error(error.message);
             return;
         }
 
         deleteId = this.lastID;
     })
     .run('INSERT INTO chirps (sender, message) VALUES (?, ?)', [2, 'Oh gosh darn it!'])
-    .run(`UPDATE chirps SET message = ? WHERE message LIKE '%darn%'`, ['Censored'], (error) => {
+    .run(`UPDATE chirps SET message = ? WHERE message LIKE '%darn%'`, ['Censored'], function(error) {
         if (error) {
             console.log(error.message);
             return;
         }
 
-        //console.log(`Row(s) updated: ${this.changes}`);
+        console.log(`Row(s) updated: ${this.changes}`);
     })
-    .run(`DELETE FROM chirps WHERE chirpId = ?`, deleteId, (error) => {
+    .run(`DELETE FROM chirps WHERE chirpId = ${deleteId}`, [], function(error) {
         if (error) {
-            console.log(error.message);
+            console.error(error.message);
             return;
         }
 
-        //console.log(`Row(s) deleted: ${this.changes}`);
-    })
+        console.log(`Row(s) deleted: ${this.changes}`);
+    });
+    */
 });
 
 app.get('/chirps', (request, response) => {
@@ -90,11 +95,13 @@ app.get('/chirps', (request, response) => {
 
 app.post('/deleteChirp', (request, response) => {
     let id = request.body.chirpId;
-    db.run('DELETE FROM chirps WHERE chirpId = ?', id, (error) => {
+    db.run('DELETE FROM chirps WHERE chirpId = ?', id, function(error) {
         if (error) {
             console.error(error.message);
             return;
         }
+
+        console.log(`Row(s) deleted: ${this.changes}`);
 
         response.redirect('/chirps');
     });
@@ -104,11 +111,13 @@ app.post('/addChirp', (request, response) => {
     let sender = request.body.sender;
     let message = request.body.message;
 
-    db.run('INSERT INTO chirps (sender, message) VALUES (?, ?)', [sender, message], (error) => {
+    db.run('INSERT INTO chirps (sender, message) VALUES (?, ?)', [sender, message], function(error) {
         if (error) {
             console.error(error.message);
             return;
         }
+
+        console.log(`Row(s) deleted: ${this.changes}`);
 
         response.redirect('/chirps');
     });
