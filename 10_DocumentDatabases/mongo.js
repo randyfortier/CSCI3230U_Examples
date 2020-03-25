@@ -4,6 +4,47 @@ let app = express();
 let session = require('express-session');
 let bodyParser = require('body-parser');
 let uuid = require('uuid/v1');
+let mongoose = require('mongoose');
+let bcrypt = require('bcrypt-nodejs');
+let assert = require('assert');
+
+// setup MongoDB
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost:27017/university', { useNewUrlParser: true });
+
+let Schema = mongoose.Schema;
+let userSchema = new Schema({
+    username: {
+        type: String,
+        unique: true,
+        index: true,
+    },
+    email: String,
+    hashedPassword: String,
+}, {collection: 'users'});
+let User = mongoose.model('user', userSchema);
+
+let studentSchema = new Schema({
+    sid: {
+        type: String,
+        validate: [/^1[0-9]{8}$/, 'must be 9 digits'],
+        unique: true,
+        index: true,
+    },
+    firstName: String,
+    lastName: {
+        type: String,
+        index: true,
+    },
+    gpa: {
+        type: Number,
+        min: 0.0,
+        max: 4.3,
+    },
+    startDate: Date,
+    fullTime: Boolean,
+}, {collection: 'students'});
+let Student = mongoose.model('student', studentSchema);
 
 // middleware
 app.use(express.static('public'));
@@ -47,16 +88,59 @@ app.get('/', (request, response) => {
     });
 });
 
-app.get('/students', (request, response) => {
-    let studentList = [
-        {sid: '100200300', firstName: 'Bender', lastName: 'Rodriguez'},
-        {sid: '100200301', firstName: 'Philip', lastName: 'Fry'},
-        {sid: '100200302', firstName: 'Taranga', lastName: 'Leela'},
-    ];
-    response.render('students', {
-        title: 'Student List',
-        students: studentList,
+function reloadStudentList(request, response, errorMessage) {
+    Student.find().then(function(studentList) {
+        response.render('students', {
+            title: 'Student List',
+            students: studentList,
+            errorMessage: errorMessage,
+        });
     });
+}
+
+app.get('/students', (request, response) => {
+    reloadStudentList(request, response, '');
+});
+
+app.post('/deleteStudent', (request, response) => {
+    let sid = request.body.sid;
+
+    Student.remove({sid: sid}, (error) => {
+        if (error) {
+            console.log('Error when deleting student ' + error);
+            reloadStudentList(request, response, 'Unable to delete student');
+        } else {
+            reloadStudentList(request, response, 'Student deleted');
+        }
+    });
+});
+
+app.post('/addOrUpdateStudent', (request, response) => {
+    let studentData = {
+        sid: request.body.sid,
+        firstName: request.body.firstName,
+        lastName: request.body.lastName,
+        gpa: request.body.gpa,
+    };
+
+    // determine if we are adding or updating
+    Student.find({sid: sid}).then(function(students) {
+        if (students.length > 0) {
+            // we already have a student with that sid, so update it
+            Student.update({sid: sid}, studentData, {multi: false}, (error, numAffected) => {
+                if (error || numAffected != 1) {
+                    console.log('Unable to update student: ' + error);
+                    reloadStudentList(request, response, 'Unable to update student');
+                } else {
+                    reloadStudentList(request, response, 'Student updated');
+                }
+            });
+        } else {
+            // we have no student with that sid, so create it
+
+        }
+    });
+    
 });
 
 app.get('/login', (request, response) => {

@@ -13,3 +13,7 @@
 .input {
     width:  20rem;
 }
+
+.error {
+    color: red;
+}
