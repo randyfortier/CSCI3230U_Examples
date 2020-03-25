@@ -124,7 +124,7 @@ app.post('/addOrUpdateStudent', (request, response) => {
     };
 
     // determine if we are adding or updating
-    Student.find({sid: sid}).then(function(students) {
+    Student.find({sid: request.body.sid}).then(function(students) {
         if (students.length > 0) {
             // we already have a student with that sid, so update it
             Student.update({sid: sid}, studentData, {multi: false}, (error, numAffected) => {
@@ -137,7 +137,6 @@ app.post('/addOrUpdateStudent', (request, response) => {
             });
         } else {
             // we have no student with that sid, so create it
-
         }
     });
     
