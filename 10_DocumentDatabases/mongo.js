@@ -127,7 +127,7 @@ app.post('/addOrUpdateStudent', (request, response) => {
     Student.find({sid: request.body.sid}).then(function(students) {
         if (students.length > 0) {
             // we already have a student with that sid, so update it
-            Student.update({sid: sid}, studentData, {multi: false}, (error, numAffected) => {
+            Student.update({sid: request.body.sid}, studentData, {multi: false}, (error, numAffected) => {
                 if (error || numAffected != 1) {
                     console.log('Unable to update student: ' + error);
                     reloadStudentList(request, response, 'Unable to update student');
@@ -137,6 +137,15 @@ app.post('/addOrUpdateStudent', (request, response) => {
             });
         } else {
             // we have no student with that sid, so create it
+            let newStudent = new Student(studentData);
+            newStudent.save(function(error) {
+                if (error) {
+                    console.log('Error while saving student: ' + error);
+                    reloadStudentList(request, response, 'Unable to insert student');
+                } else {
+                    reloadStudentList(request, response, 'Student added');
+                }
+            });
         }
     });
     
@@ -151,21 +160,24 @@ app.get('/login', (request, response) => {
 app.post('/processLogin', (request, response) => {
     let username = request.body.username;
     let password = request.body.password;
+    let hashedPassword = bcrypt.hashSync(password);
 
-    if (usernameExists(username)) {
-        // TODO: Check the password (in the next section)
-        request.session.username = username;
-        response.render('loginSuccess', {
-            username: username,
-            title: 'Login Success',
-        });
-    } else {
-        // login failed
-        response.render('login', {
-            title: 'Please Log In',
-            errorMessage: 'Login Incorrect',
-        });
-    }
+    User.find({username: username, hashedPassword: hashedPassword}).then(function(users) {
+        if (users.length > 0) {
+            // username and hashed passwords match
+            request.session.username = username;
+            response.render('loginSuccess', {
+                title: 'Login Success',
+                username: username,
+            });
+        } else {
+            // login failed (no username)
+            response.render('login', {
+                title: 'Please Log In',
+                errorMessage: 'Login Incorrect',
+            });
+        }
+    });
 });
 
 app.get('/register', function(request, response) {
@@ -174,19 +186,28 @@ app.get('/register', function(request, response) {
 
 app.post('/processRegistration', function(request, response) {
   let username = request.body.username;
+  let email = request.body.email;
   let password = request.body.pwd;
+  let hashedPassword = bcrypt.hashSync(password);
 
-  if (userExists(username)) {
-    response.render('register', {title: 'Register',
-                                 errorMessage: 'Username in use'});
-  } else {
-    usernames.push(username);
+  let newUser = new User({
+      username: username,
+      email: email,
+      hashedPassword: hashedPassword,
+  });
 
-    request.session.username = username;
-
-    response.render('registerConfirm', {username: username,
-                                        title: 'Welcome aboard!'});
-  }
+  newUser.save((error) => {
+      if (error) {
+          console.log('Unable to register: ' + error);
+          response.render('register', {errorMessage: 'Unable to register user.'});
+      } else {
+          request.session.username = username;
+          response.render('registerConfirm', {
+              title: 'Welcome aboard!',
+              username: username,
+          });
+      }
+  });
 });
 
 app.get('/logout', function(request, response) {
