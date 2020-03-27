@@ -1,40 +1,39 @@
 extends layout
 block content
-    h1= title 
+   h1= title
 
-    if (errorMessage)
-        div(class="error")= errorMessage
+   if (errorMessage)
+      div(class="error")= errorMessage
 
-    table(class="table")
-        tr 
-            th SID 
-            th First Name 
-            th Last Name 
-            th GPA 
-            th Action 
+   p Class list for #{username}:
 
-        each student in students
-            tr 
-                td= student.sid
-                td= student.firstName 
-                td= student.lastName
-                td= student.gpa 
-                td 
-                    form(action="/deleteStudent", method="post")
-                        input(type="hidden", name="sid", value=student.sid)
-                        button(class="button") Delete
-    
-    form(action="/addOrUpdateStudent", method="post")
-        label(for="sid") Student ID: 
-        input(type="text", name="sid", placeholder="Student ID")
+   table(class="table")
+      tr
+         th SID
+         th First Name
+         th Last Name
+         th GPA
+         th Action
 
-        label(for="firstName") First Name: 
-        input(type="text", name="firstName", placeholder="First name")
+      each student in students
+         tr
+            td= student.sid
+            td= student.firstName
+            td= student.lastName
+            td= student.gpa
+            td
+               form(action='/deleteStudent',method='post')
+                  input(type='hidden', name='sid', value=student.sid)
+                  button(type='submit') Delete
 
-        label(for="lastName") Last Name: 
-        input(type="text", name="lastName", placeholder="Last name")
-
-        label(for="gpa") GPA: 
-        input(type="text", name="gpa", placeholder="GPA")
-
-        button(class="button") Insert or Update 
+   form(action='/addOrUpdateStudent', method='post')
+      div
+         input(type='text',name='sid',placeholder='Student ID')
+      div
+         input(type='text',name='firstName',placeholder='First Name')
+      div
+         input(type='text',name='lastName',placeholder='Last Name')
+      div
+         input(type='text',name='gpa',placeholder='GPA')
+      div
+         button(type='submit') Add or Update

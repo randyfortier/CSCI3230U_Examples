@@ -1,25 +1,33 @@
 extends layout
 block content
-      div(class="container")
-            h1= title
+   h1= title
 
-            div(class='errorMessage')= errorMessage
+   div(class='errorMessage')= errorMessage
 
-            form(action='/processRegistration', method='post', class='registrationForm')
+   form(action='/processRegistration',
+      method='post',
+      class='form')
 
-                  div(class="field")
-                        label(class="form-element", for="username") Username:
-                        div(class="control")
-                              input(type="text", class="input", name="username", id="username", placeholder="Username")
+      label(class='label row1', for='username') Username:
+      input(type='text',
+            id='username',
+            name='username',
+            placeholder='Username',
+            class='control row1')
 
-                  div(class="field")
-                        label(class="form-element", for="email") E-Mail:
-                        div(class="control")
-                              input(type="text", class="input", name="email", id="email", placeholder="E-Mail address")
+      label(class='label row2', for='pwd') Password:
+      input(type='password',
+            id='pwd',
+            name='pwd',
+            placeholder='Password',
+            class='control row2')
 
-                  div(class="field")
-                        label(class="form-element", for="password") Password:
-                        div(class="control")
-                              input(type="password", class="input", name="password", id="password", placeholder="Password")
+      label(class='label row3', for='email') E-Mail:
+      input(type='text',
+            id='email',
+            name='email',
+            placeholder='E-Mail Address',
+            class='control row3')
 
-                  button(class="button is-link") Sign Up
+      button(type='submit',
+             class='control row4') Sign Up

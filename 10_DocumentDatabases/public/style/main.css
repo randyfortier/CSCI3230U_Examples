@@ -1,19 +1,75 @@
-.container {
-    margin-top: 5rem;
-}
-
-.loginForm {
-    margin-top: 2rem;
-}
-
-.registrationForm {
-    margin-top: 2rem;
-}
-
-.input {
-    width:  20rem;
-}
-
-.error {
+.errorMessage {
     color: red;
-}
+    font-weight: bold;
+ }
+ 
+ body {
+    margin: 0;
+ }
+ 
+ h1,h2,h3,p,div,section,table,label {
+    margin: 1rem;
+ }
+ 
+ .menu {
+    margin: 0;
+    padding: 2rem;
+    background-color: black;
+ }
+ 
+ .menu li {
+    display: inline-block;
+ }
+ 
+ .menu a {
+    padding: 1rem;
+    color: white;
+    text-decoration: none;
+ }
+ 
+ .menu a:hover {
+    border-radius: 5px;
+    background-color: #303030;
+ }
+ 
+ .table {
+    border-collapse: collapse;
+ }
+ 
+ .table td, .table th {
+    padding: 0.5rem;
+    border: 1px solid black;
+ }
+ 
+ .form {
+    display: grid;
+    grid-template-columns: 1fr 3fr 5fr;
+    grid-column-gap: 5rem;
+    grid-row-gap: 1rem;
+ }
+ 
+ .label {
+    grid-column: 1;
+ }
+ 
+ .control {
+    grid-column: 2;
+    height: 2rem;
+ }
+ 
+ .row1 {
+    grid-row: 1;
+ }
+ 
+ .row2 {
+    grid-row: 2;
+ }
+ 
+ .row3 {
+    grid-row: 3;
+ }
+ 
+ .row4 {
+    grid-row: 4;
+ }
+ 

@@ -6,218 +6,251 @@ let bodyParser = require('body-parser');
 let uuid = require('uuid/v1');
 let mongoose = require('mongoose');
 let bcrypt = require('bcrypt-nodejs');
-let assert = require('assert');
 
-// setup MongoDB
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/university', { useNewUrlParser: true });
-
-let Schema = mongoose.Schema;
-let userSchema = new Schema({
-    username: {
-        type: String,
-        unique: true,
-        index: true,
-    },
-    email: String,
-    hashedPassword: String,
-}, {collection: 'users'});
-let User = mongoose.model('user', userSchema);
-
-let studentSchema = new Schema({
-    sid: {
-        type: String,
-        validate: [/^1[0-9]{8}$/, 'must be 9 digits'],
-        unique: true,
-        index: true,
-    },
-    firstName: String,
-    lastName: {
-        type: String,
-        index: true,
-    },
-    gpa: {
-        type: Number,
-        min: 0.0,
-        max: 4.3,
-    },
-    startDate: Date,
-    fullTime: Boolean,
-}, {collection: 'students'});
-let Student = mongoose.model('student', studentSchema);
+// database config
+mongoose.Promise = global.Promise
+mongoose.connect('mongodb://localhost:27017/university', {
+      useNewUrlParser: true
+   },
+   function(error) {
+      if (error) {
+         return console.error('Unable to connect:', error);
+      }
+   });
+//, {useMongoClient: true});
+mongoose.set('useCreateIndex', true);
 
 // middleware
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+   extended: false
+}));
 
-// configure out view/templating engine
+// configure the templating engine
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
-// session tracking
+// configure sessions
 app.use(session({
-    genid: (request) => { return uuid(); },
-    resave: false, 
-    saveUninitialized: false,
-    // cookie: { secure: true},
-    secret: 'apollo slackware prepositional expectations',
+   genid: function(request) {
+      return uuid();
+   },
+   resave: false,
+   saveUninitialized: false,
+   // cookie: {secure: true},
+   secret: 'apollo slackware prepositional expectations'
 }));
 
-var usernames = ['admin'];
-function usernameExists(toFind) {
-    for (let i = 0; i < usernames.length; i++) {
-        if (usernames[i] === toFind) {
-            return true;
-        }
-    }
-    return false;
+// database schemas
+let Schema = mongoose.Schema;
+let userSchema = new Schema({
+   username: {
+      type: String,
+      unique: true,
+      index: true
+   },
+   email: String,
+   hashedPassword: String
+}, {
+   collection: 'users'
+});
+let User = mongoose.model('user', userSchema);
+
+let studentSchema = new Schema({
+   sid: {
+      type: String,
+      unique: true,
+      index: true
+   },
+   firstName: String,
+   lastName: {
+      type: String,
+      index: true
+   },
+   gpa: {
+      type: Number,
+      min: 0.0,
+      max: 4.3
+   },
+   startDate: Date,
+   fullTime: Boolean
+}, {
+   collection: 'students'
+});
+let Student = mongoose.model('student', studentSchema);
+
+// routes
+app.get('/', function(request, response) {
+   username = request.session.username;
+   response.render('index', {
+      title: 'Index',
+      description: 'This is the main page',
+      username: username
+   });
+});
+
+function reloadStudentList(request, response, responseMessage) {
+   Student.find().then(function(results) {
+      response.render('students', {
+         title: 'Student List',
+         students: results,
+         responseMessage: responseMessage
+      });
+   }).catch(function(error) {
+      console.log(error);
+   });
 }
 
-app.get('/', (request, response) => {
-    console.log('/ handler');
-    let session = request.session;
-    let username = '';
-    if (session.username) {
-        username = session.username;
-    }
-    response.render('index', {
-        title: 'Main Page',
-        description: 'This is the main page',
-        username: username,        
-    });
+app.get('/students', function(request, response) {
+   reloadStudentList(request, response, '');
 });
 
-function reloadStudentList(request, response, errorMessage) {
-    Student.find().then(function(studentList) {
-        response.render('students', {
-            title: 'Student List',
-            students: studentList,
-            errorMessage: errorMessage,
-        });
-    });
-}
-
-app.get('/students', (request, response) => {
-    reloadStudentList(request, response, '');
+app.post('/deleteStudent', function(request, response) {
+   sid = request.body.sid;
+   Student.remove({
+      sid: sid
+   }, function(error) {
+      if (error) {
+         reloadStudentList(request, response, 'Unable to delete student');
+      } else {
+         reloadStudentList(request, response, 'Student deleted');
+      }
+   });
 });
 
-app.post('/deleteStudent', (request, response) => {
-    let sid = request.body.sid;
+app.post('/addOrUpdateStudent', function(request, response) {
+   sid = request.body.sid;
+   firstName = request.body.firstName;
+   lastName = request.body.lastName;
+   gpa = parseFloat(request.body.gpa);
 
-    Student.remove({sid: sid}, (error) => {
-        if (error) {
-            console.log('Error when deleting student ' + error);
-            reloadStudentList(request, response, 'Unable to delete student');
-        } else {
-            reloadStudentList(request, response, 'Student deleted');
-        }
-    });
-});
+   studentData = {
+      sid: sid,
+      firstName: firstName,
+      lastName: lastName,
+      gpa: gpa
+   };
 
-app.post('/addOrUpdateStudent', (request, response) => {
-    let studentData = {
-        sid: request.body.sid,
-        firstName: request.body.firstName,
-        lastName: request.body.lastName,
-        gpa: request.body.gpa,
-    };
+   Student.find({
+      sid: sid
+   }).then(function(results) {
+      if (results.length > 0) {
+         // update an existing student
+         Student.updateOne({
+               sid: sid
+            },
+            studentData,
+            function(error, numAffected) {
+               if (error != null || numAffected != 1) {
+                  console.log('update error:', error);
 
-    // determine if we are adding or updating
-    Student.find({sid: request.body.sid}).then(function(students) {
-        if (students.length > 0) {
-            // we already have a student with that sid, so update it
-            Student.update({sid: request.body.sid}, studentData, {multi: false}, (error, numAffected) => {
-                if (error || numAffected != 1) {
-                    console.log('Unable to update student: ' + error);
-                    reloadStudentList(request, response, 'Unable to update student');
-                } else {
-                    reloadStudentList(request, response, 'Student updated');
-                }
+                  reloadStudentList(request, response, 'Unable to update student');
+               } else {
+                  reloadStudentList(request, response, 'Student updated');
+               }
             });
-        } else {
-            // we have no student with that sid, so create it
-            let newStudent = new Student(studentData);
-            newStudent.save(function(error) {
-                if (error) {
-                    console.log('Error while saving student: ' + error);
-                    reloadStudentList(request, response, 'Unable to insert student');
-                } else {
-                    reloadStudentList(request, response, 'Student added');
-                }
-            });
-        }
-    });
-    
+      } else {
+         // add a new student
+         newStudent = new Student(studentData);
+         newStudent.save(function(error) {
+            if (error != null) {
+               console.log('add error:', error);
+               reloadStudentList(request, response, 'Unable to add student');
+            } else {
+               reloadStudentList(request, response, 'Student added');
+            }
+         });
+
+      }
+   });
 });
 
-app.get('/login', (request, response) => {
-    response.render('login', {
-        title: 'Please Sign In',
-    });
+app.get('/login', function(request, response) {
+   response.render('login', {
+      title: 'Login Page',
+      errorMessage: ''
+   });
 });
 
-app.post('/processLogin', (request, response) => {
-    let username = request.body.username;
-    let password = request.body.password;
-    let hashedPassword = bcrypt.hashSync(password);
+app.post('/processLogin', function(request, response) {
+   username = request.body.username;
+   password = request.body.password;
 
-    User.find({username: username, hashedPassword: hashedPassword}).then(function(users) {
-        if (users.length > 0) {
-            // username and hashed passwords match
+   User.find({username: username}).then(function(results) {
+      if (results.length != 1) {
+         console.log('login: no user found');
+         // error logging in - no such user
+         response.render('login', {
+            errorMessage: 'Login Incorrect'
+         });
+      } else {
+         // user was found, now check the password
+         console.log('login password:', results[0].hashedPassword);
+         if (bcrypt.compareSync(password, results[0].hashedPassword)) {
+            // password match - successful login
             request.session.username = username;
             response.render('loginSuccess', {
-                title: 'Login Success',
-                username: username,
+               username: username,
+               title: 'Login Success'
             });
-        } else {
-            // login failed (no username)
+         } else {
+            console.log('login: password is not a match');
+            // error logging in - invalid password
             response.render('login', {
-                title: 'Please Log In',
-                errorMessage: 'Login Incorrect',
+               errorMessage: 'Login Incorrect'
             });
-        }
-    });
+         }
+      }
+   }).catch(function(error) {
+      // error logging in - no such user
+      console.log('login: catch');
+      response.render('login', {
+         errorMessage: 'Login Incorrect'
+      });
+   });
 });
 
 app.get('/register', function(request, response) {
-  response.render('register', {title: 'Register'});
+   response.render('register', {
+      title: 'Register'
+   });
 });
 
 app.post('/processRegistration', function(request, response) {
-  let username = request.body.username;
-  let email = request.body.email;
-  let password = request.body.pwd;
-  let hashedPassword = bcrypt.hashSync(password);
+   username = request.body.username;
+   email = request.body.email;
+   password = request.body.pwd;
 
-  let newUser = new User({
+   hashedPassword = bcrypt.hashSync(password);
+   console.log('register password:', hashedPassword);
+
+   newUser = new User({
       username: username,
       email: email,
-      hashedPassword: hashedPassword,
-  });
+      hashedPassword: hashedPassword
+   });
 
-  newUser.save((error) => {
+   newUser.save(function(error) {
       if (error) {
-          console.log('Unable to register: ' + error);
-          response.render('register', {errorMessage: 'Unable to register user.'});
+         response.render('register',
+                         {errorMessage: 'Invalid registration data'});
       } else {
-          request.session.username = username;
-          response.render('registerConfirm', {
-              title: 'Welcome aboard!',
-              username: username,
-          });
+         request.session.username = username; // logged in
+         response.render('registerConfirm', {
+            username: username,
+            title: 'Welcome aboard!'
+         });
       }
-  });
+   });
 });
 
 app.get('/logout', function(request, response) {
-  request.session.username = '';
-  response.redirect('/');
+   request.session.username = '';
+   response.redirect('/');
 });
 
-
-app.set('port', 3000);
-
-app.listen(app.get('port'), () => {
-    console.log('Node.js/Express is listening on port ' + app.get('port'));
+// web listener
+app.set('port', process.env.PORT || 3000);
+app.listen(app.get('port'), function() {
+   console.log('Server listening on port ' + app.get('port'));
 });
